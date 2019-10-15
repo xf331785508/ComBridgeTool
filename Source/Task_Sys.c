@@ -16,8 +16,7 @@
 local uint8_t   lbStep = 0;
 local uint32_t  ldwCnt;
 
-local void lvTask_UComSendByPeriodTime( void );
-local void lvTask_SystemLedToggly( void );
+
 local void lvTask_Counter( void );
 local bool lyTask_UsartParaCheck(struct tagUsartPara *pt);
 
@@ -27,6 +26,9 @@ global void gvTask_SystemProcess( void )
     static struct tagUsartPara astUP[eUSART_Max] = {0};
     static uint8_t  asbIndex = eUSART_Max;
     char *apszParity[eUSART_Max][eParityMax] = {
+        {"None", "Even", "Odd\0"},
+        {"None", "Even", "Odd\0"},
+        {"None", "Even", "Odd\0"},
         {"None", "Even", "Odd\0"},
         {"None", "Even", "Odd\0"}
     };
@@ -38,13 +40,13 @@ global void gvTask_SystemProcess( void )
         case 0:
             gvIF_SystemClockConfig();
             gvIF_SysInterruptionConfig();
-            gvIF_UartInitialize(NULL);
             gvIF_AsynchronousTimerInit();
+            gvIF_UartInitialize();
             lbStep = 1u;
             break;
         case 1:
             {
-                printf("\r\n**** System information print ***\r\n");
+                printf("\r\n************ System information print ************\r\n");
                 printf("System clock  :%u Hz\r\n"
                        "HCLK frequency:%u Hz\r\n"
                        "APB1 frequency:%u Hz\r\n"
@@ -57,26 +59,48 @@ global void gvTask_SystemProcess( void )
                        "         TX:PA9\r\n"
                        "         RX:PA10\r\n"
                        "       }\r\n");
-                printf("USART1 Parameter { %u - %u - %f - %s\r\n",
+                printf("USART1 Parameter { %u - %u - %u - %s\r\n\r\n",
                        gtSystemInfo.tUsart[eMAIN_USART].dwBaudrate,
                        gtSystemInfo.tUsart[eMAIN_USART].dwDataBit,
-                       ((float)gtSystemInfo.tUsart[eMAIN_USART].dwStopBit/10.0f),
+                       gtSystemInfo.tUsart[eMAIN_USART].dwStopBit,
                        apszParity[eMAIN_USART][gtSystemInfo.tUsart[eMAIN_USART].eParity]);
                 printf("USART2 {\r\n"
                        "         TX:PA2\r\n"
                        "         RX:PA3\r\n"
                        "       }\r\n");
-                printf("USART2 Parameter { %u - %u - %f - %s\r\n",
+                printf("USART2 Parameter { %u - %u - %u - %s\r\n\r\n",
                        gtSystemInfo.tUsart[eSEC_USART].dwBaudrate,
                        gtSystemInfo.tUsart[eSEC_USART].dwDataBit,
-                       ((float)gtSystemInfo.tUsart[eSEC_USART].dwStopBit/10.0f),
+                       gtSystemInfo.tUsart[eSEC_USART].dwStopBit,
                        apszParity[eSEC_USART][gtSystemInfo.tUsart[eSEC_USART].eParity]);
-                printf("\r\nIf you need to change the parameter of USART, please"
-                       "reply in 30 seconds.\r\n");
-                gyIF_TimerEventSet(eIntervalDetection, ITIMER0_TIME_1S, 
-                                   lvTask_UComSendByPeriodTime, true);
-                ldwCnt = 0;
-                lbStep = 2u;
+                printf("USART3 {\r\n"
+                       "         TX:PB10\r\n"
+                       "         RX:PB11\r\n"
+                       "       }\r\n");
+                printf("USART3 Parameter { %u - %u - %u - %s\r\n\r\n",
+                       gtSystemInfo.tUsart[eTHI_USART].dwBaudrate,
+                       gtSystemInfo.tUsart[eTHI_USART].dwDataBit,
+                       gtSystemInfo.tUsart[eTHI_USART].dwStopBit,
+                       apszParity[eTHI_USART][gtSystemInfo.tUsart[eTHI_USART].eParity]);
+                printf("UART4  {\r\n"
+                       "         TX:PC10\r\n"
+                       "         RX:PC11\r\n"
+                       "       }\r\n");
+                printf("UART4  Parameter { %u - %u - %u - %s\r\n\r\n",
+                       gtSystemInfo.tUsart[eFOUR_USART].dwBaudrate,
+                       gtSystemInfo.tUsart[eFOUR_USART].dwDataBit,
+                       gtSystemInfo.tUsart[eFOUR_USART].dwStopBit,
+                       apszParity[eFOUR_USART][gtSystemInfo.tUsart[eFOUR_USART].eParity]);
+                printf("UART5  {\r\n"
+                       "         TX:PC12\r\n"
+                       "         RX:PD2\r\n"
+                       "       }\r\n");
+                printf("UART5  Parameter { %u - %u - %u - %s\r\n\r\n",
+                       gtSystemInfo.tUsart[eFIFTH_USART].dwBaudrate,
+                       gtSystemInfo.tUsart[eFIFTH_USART].dwDataBit,
+                       gtSystemInfo.tUsart[eFIFTH_USART].dwStopBit,
+                       apszParity[eFIFTH_USART][gtSystemInfo.tUsart[eFIFTH_USART].eParity]);
+                lbStep = 3u;
             }
             break;
         case 2:
@@ -109,8 +133,6 @@ global void gvTask_SystemProcess( void )
             break;
         case 3:
             printf("COM bridge start!!!\r\n");
-            gyIF_TimerEventSet(eIntervalDetection, ITIMER0_TIME_1S, 
-                               lvTask_SystemLedToggly, true);
             lbStep = 4u;
             break;
         case 4:
@@ -168,7 +190,7 @@ global void gvTask_SystemProcess( void )
             {
                 USART_Cmd( MAIN_USART, DISABLE );
                 USART_Cmd( SEC_USART,  DISABLE );
-                gvIF_UartInitialize(&astUP[asbIndex]);
+                gvIF_UartInitialize();
             }
             else if(ldwCnt >= 15u)
             {
@@ -185,21 +207,6 @@ global void gvTask_SystemProcess( void )
 
 
 
-//!<  Temperary define for testing whether the interface is OK.
-local void lvTask_UComSendByPeriodTime( void )
-{
-    char aszSecondStr[4u] = {'\0'};
-    
-    sprintf(aszSecondStr, "%02u\r\n", ldwCnt);
-    gvIF_UComSndDatasSet( eMAIN_USART, (uint8_t*)aszSecondStr, sizeof(aszSecondStr) );
-    gvIF_UComSndDatasSet( eSEC_USART,  (uint8_t*)aszSecondStr, sizeof(aszSecondStr) );
-	ldwCnt++;
-}
-
-local void lvTask_SystemLedToggly( void )
-{
-	LED_D3_PIN_TOGGEL;
-}
 
 
 local void lvTask_Counter( void )

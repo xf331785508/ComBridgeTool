@@ -1,0 +1,47 @@
+
+USART1	:  TX - PA9     5v Tolerance
+		   RX - PA10	5v Tolerance
+		   TX - DMA FUNCTION
+		   LED-D1
+		   115200,8,1,N
+		   
+USART2	:  TX - PA2 
+		   RX - PA3 
+		   TX - DMA FUNCTION
+		   LED-D2
+		   115200,8,1,N
+
+USART3	:  TX - PB10    5v Tolerance
+		   RX - PB11	5v Tolerance
+		   TX - DMA FUNCTION
+		   LED-D3
+		   9600,8,1,N
+		   
+UART4	:  TX - PC10    5v Tolerance
+		   RX - PC11	5v Tolerance
+		   TX - DMA FUNCTION
+		   LED-D4
+		   4800,8,1,N
+		   
+UART5	:  TX - PC12     5v Tolerance
+		   RX - PD2  	 5v Tolerance
+		   LED-D4  //!< share with UART4
+		   115200,8,1,N
+	   
+	   
+Bridge：
+
+USART1  <===>{ 
+				USART2,
+				USART3,
+				UART4,
+				UART5
+			 } //!< Used not same time.
+
+
+
+
+
+
+
+	   

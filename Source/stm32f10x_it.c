@@ -37,8 +37,15 @@
 /* External functions explicit declaration------------------------------------*/
 extern void gvcbIF_MAIN_DMA_Channel_IRQHandler( void );
 extern void gvcbIF_SEC_DMA_Channel_IRQHandler( void );
+extern void gvcbIF_THI_DMA_Channel_IRQHandler( void );
+extern void gvcbIF_FOUR_DMA_Channel_IRQHandler( void );
+
 extern void gvcbIF_MAIN_USART_IRQHandler( void );
 extern void gvcbIF_SEC_USART_IRQHandler( void );
+extern void gvcbIF_THI_USART_IRQHandler( void );
+extern void gvcbIF_FOUR_USART_IRQHandler( void );
+extern void gvcbIF_FIFTH_USART_IRQHandler( void );
+
 extern void gvcbIF_AsyncEventTimer_IRQHandler(void);
 
 /******************************************************************************/
@@ -169,6 +176,16 @@ void DMA1_Channel7_IRQHandler( void )
 	gvcbIF_SEC_DMA_Channel_IRQHandler();
 }
 
+void DMA1_Channel2_IRQHandler( void )
+{
+	gvcbIF_THI_DMA_Channel_IRQHandler();
+}
+
+void DMA2_Channel4_5_IRQHandler( void )
+{
+	gvcbIF_FOUR_DMA_Channel_IRQHandler();
+}
+
 void USART1_IRQHandler( void )
 {
 	gvcbIF_MAIN_USART_IRQHandler();
@@ -177,6 +194,21 @@ void USART1_IRQHandler( void )
 void USART2_IRQHandler( void )
 {
 	gvcbIF_SEC_USART_IRQHandler();
+}
+
+void USART3_IRQHandler( void )
+{
+	gvcbIF_THI_USART_IRQHandler();
+}
+
+void UART4_IRQHandler( void )
+{
+	gvcbIF_FOUR_USART_IRQHandler();
+}
+
+void UART5_IRQHandler( void )
+{
+	gvcbIF_FIFTH_USART_IRQHandler();
 }
 
 void TIM2_IRQHandler( void )

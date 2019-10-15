@@ -32,14 +32,6 @@ global void gvIF_SystemClockConfig( void )
 	SystemCoreClockUpdate();
     lvIF_SystemClockGet();
     gtSystemInfo.dwSpiFlashSize = SPI_FLASH_SIZE;
-    gtSystemInfo.tUsart[eMAIN_USART].dwBaudrate = 115200U;
-    gtSystemInfo.tUsart[eMAIN_USART].dwDataBit  = 8U;
-    gtSystemInfo.tUsart[eMAIN_USART].dwStopBit  = 1U;
-    gtSystemInfo.tUsart[eMAIN_USART].eParity    = eParityNone;
-    gtSystemInfo.tUsart[eSEC_USART].dwBaudrate  = 115200U;
-    gtSystemInfo.tUsart[eSEC_USART].dwDataBit   = 8U;
-    gtSystemInfo.tUsart[eSEC_USART].dwStopBit   = 1U;
-    gtSystemInfo.tUsart[eSEC_USART].eParity     = eParityNone;
 	
 	LED_PORT_RCC_EN;
 	aptIO->GPIO_Pin	  = LED_D1_PIN | LED_D2_PIN;
@@ -64,36 +56,64 @@ global void gvIF_SysInterruptionConfig( void )
 	//!< This part is for TIM2;
 	ptNVIC = &NVIC_InitStructure;
 	ptNVIC->NVIC_IRQChannel						= TIM2_IRQn	;
-	ptNVIC->NVIC_IRQChannelPreemptionPriority	= 0;
-	ptNVIC->NVIC_IRQChannelSubPriority			= 0;
+	ptNVIC->NVIC_IRQChannelPreemptionPriority	= 0U;
+	ptNVIC->NVIC_IRQChannelSubPriority			= 0U;
 	ptNVIC->NVIC_IRQChannelCmd					= ENABLE;
 	NVIC_Init( ptNVIC );
 
 	//!< This part is for DMA1 channel 4
     ptNVIC->NVIC_IRQChannel                     = DMA1_Channel4_IRQn;
-    ptNVIC->NVIC_IRQChannelPreemptionPriority   = 0;
-    ptNVIC->NVIC_IRQChannelSubPriority          = 1;
+    ptNVIC->NVIC_IRQChannelPreemptionPriority   = 0U;
+    ptNVIC->NVIC_IRQChannelSubPriority          = 1U;
     ptNVIC->NVIC_IRQChannelCmd                  = ENABLE;
     NVIC_Init( ptNVIC );
 
 	//!< This part is for DMA1 channel 7
     ptNVIC->NVIC_IRQChannel                     = DMA1_Channel7_IRQn;
-    ptNVIC->NVIC_IRQChannelPreemptionPriority   = 0;
-    ptNVIC->NVIC_IRQChannelSubPriority          = 2;
+    ptNVIC->NVIC_IRQChannelPreemptionPriority   = 0U;
+    ptNVIC->NVIC_IRQChannelSubPriority          = 2U;
     ptNVIC->NVIC_IRQChannelCmd                  = ENABLE;
     NVIC_Init( ptNVIC );
 
+	//!< This part is for UART5;
+	ptNVIC->NVIC_IRQChannel						= UART5_IRQn;
+	ptNVIC->NVIC_IRQChannelPreemptionPriority	= 0U;
+	ptNVIC->NVIC_IRQChannelSubPriority			= 3U;
+	ptNVIC->NVIC_IRQChannelCmd					= ENABLE;
+	NVIC_Init( ptNVIC );
+
 	//!< This part is for USART1;
 	ptNVIC->NVIC_IRQChannel						= USART1_IRQn;
-	ptNVIC->NVIC_IRQChannelPreemptionPriority	= 1	;
-	ptNVIC->NVIC_IRQChannelSubPriority			= 0	;
+	ptNVIC->NVIC_IRQChannelPreemptionPriority	= 1U;
+	ptNVIC->NVIC_IRQChannelSubPriority			= 0U;
 	ptNVIC->NVIC_IRQChannelCmd					= ENABLE;
 	NVIC_Init( ptNVIC );
 
 	//!< This part is for USART2;
 	ptNVIC->NVIC_IRQChannel						= USART2_IRQn;
-	ptNVIC->NVIC_IRQChannelPreemptionPriority	= 1	;
-	ptNVIC->NVIC_IRQChannelSubPriority			= 1	;
+	ptNVIC->NVIC_IRQChannelPreemptionPriority	= 1U;
+	ptNVIC->NVIC_IRQChannelSubPriority			= 1U;
+	ptNVIC->NVIC_IRQChannelCmd					= ENABLE;
+	NVIC_Init( ptNVIC );
+
+	//!< This part is for DMA1 channel 2
+    ptNVIC->NVIC_IRQChannel                     = DMA1_Channel2_IRQn;
+    ptNVIC->NVIC_IRQChannelPreemptionPriority   = 1U;
+    ptNVIC->NVIC_IRQChannelSubPriority          = 2U;
+    ptNVIC->NVIC_IRQChannelCmd                  = ENABLE;
+    NVIC_Init( ptNVIC );
+
+	//!< This part is for USART3;
+	ptNVIC->NVIC_IRQChannel						= USART3_IRQn;
+	ptNVIC->NVIC_IRQChannelPreemptionPriority	= 1U;
+	ptNVIC->NVIC_IRQChannelSubPriority			= 3U;
+	ptNVIC->NVIC_IRQChannelCmd					= ENABLE;
+	NVIC_Init( ptNVIC );
+
+	//!< This part is for UART4;
+	ptNVIC->NVIC_IRQChannel						= UART4_IRQn;
+	ptNVIC->NVIC_IRQChannelPreemptionPriority	= 2U;
+	ptNVIC->NVIC_IRQChannelSubPriority			= 0U;
 	ptNVIC->NVIC_IRQChannelCmd					= ENABLE;
 	NVIC_Init( ptNVIC );
 }

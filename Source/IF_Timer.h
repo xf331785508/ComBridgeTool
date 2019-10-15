@@ -45,6 +45,8 @@
 typedef enum  
 {
 	eIntervalDetection = 0,
+    eUsartBusyCheck,
+    eUsartIdleLedFlash,
 #if  DEBUG_TIMER_CLK_OUTPUT == 1U
 	eClockOutput,
 #endif	
